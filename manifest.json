@@ -1,0 +1,18 @@
+{
+  "name": "Math Rhythm - Arcade Rhythm Game",
+  "short_name": "MathRhythm",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#060B19",
+  "theme_color": "#0D47A1",
+  "description": "Calculate math to the beat in this 16:9 arcade rhythm game.",
+  "icons": [
+    {
+      "src": "assets/covers/rick.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Rhythm - Arcade Rhythm Game</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/rhythm.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+  <!-- 16:9 Master Viewport Container -->
+  <div id="app">
+    <!-- Starfield Canvas for dynamic cosmos background -->
+    <canvas id="starfield-canvas"></canvas>
+
+    <!-- Top Navigation Header -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <button id="btn-song-select-back" class="nav-back-btn font-stroked" style="display:none;">
+          ◀ BACK
+        </button>
+        <div class="game-logo" id="top-logo">
+          <span class="logo-badge font-stroked">MATH</span>
+          <span class="logo-text font-stroked">RHYTHM</span>
+        </div>
+      </div>
+
+      <!-- Top Right: User Profile / Auth Area (as requested) -->
+      <div class="user-status">
+        <div class="user-badge">
+          <span class="user-avatar-icon">👤</span>
+          <span id="current-username-display">Semyoniks</span>
+        </div>
+        <button id="btn-open-auth" class="btn btn-auth font-stroked">
+          Sign In / Register
+        </button>
+        <button id="btn-logout" class="btn btn-exit font-stroked" style="display:none;">
+          Sign Out
+        </button>
+      </div>
+    </header>
+
+    <!-- ================= SCREEN 1: MAIN MENU (Picture 1 Style) ================= -->
+    <main id="screen-main-menu" class="screen active">
+      <div class="menu-hero-container">
+        <!-- Left Side: Brand & Vertical Cards -->
+        <div class="menu-hero-left">
+          <div class="hero-brand">
+            <div class="hero-brand-icon">
+              <svg viewBox="0 0 100 100" width="48" height="48">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#00E5FF" stroke-width="8" stroke-dasharray="180 50"/>
+                <polygon points="40,32 70,50 40,68" fill="#15D8B3"/>
+              </svg>
+            </div>
+            <div class="hero-brand-text">
+              <h1 class="font-stroked hero-title">MATH RHYTHM</h1>
+              <span class="hero-sub-badge">CALCULATE TO THE BEAT</span>
+            </div>
+          </div>
+
+          <!-- Vertical Action Cards (Picture 1 Style) -->
+          <div class="menu-cards-list">
+            <!-- PLAY CARD -->
+            <div id="card-menu-play" class="action-card card-play">
+              <div class="card-icon-box">🎮</div>
+              <div class="card-text-box">
+                <span class="card-kicker">RANKED & CASUAL</span>
+                <span class="card-heading font-stroked">PLAY</span>
+                <span class="card-desc">Song Selection, Maps & Difficulties</span>
+              </div>
+              <div class="card-arrow">▶</div>
+            </div>
+
+            <!-- SETTINGS CARD -->
+            <div id="card-menu-settings" class="action-card card-settings">
+              <div class="card-icon-box">⚙️</div>
+              <div class="card-text-box">
+                <span class="card-kicker">OPTIONS</span>
+                <span class="card-heading font-stroked">SETTINGS</span>
+                <span class="card-desc">Music Volume, UI SFX & Preferences</span>
+              </div>
+              <div class="card-arrow">▶</div>
+            </div>
+
+            <!-- MAP EDITOR CARD -->
+            <div id="card-menu-editor" class="action-card card-editor">
+              <div class="card-icon-box">🎵</div>
+              <div class="card-text-box">
+                <span class="card-kicker">TOOLS</span>
+                <span class="card-heading font-stroked">MAP EDITOR</span>
+                <span class="card-desc">Import MP3s, Chart Beats & Lanes</span>
+              </div>
+              <div class="card-arrow">▶</div>
+            </div>
+
+            <!-- EXIT CARD -->
+            <div id="card-menu-exit" class="action-card card-exit">
+              <div class="card-icon-box">🚪</div>
+              <div class="card-text-box">
+                <span class="card-kicker">SYSTEM</span>
+                <span class="card-heading font-stroked">EXIT</span>
+                <span class="card-desc">Quit Math Rhythm</span>
+              </div>
+              <div class="card-arrow">✕</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Decorative Ambient Rhythm Graphic -->
+        <div class="menu-hero-right">
+          <div class="ambient-visual-circle">
+            <div class="circle-ring-1"></div>
+            <div class="circle-ring-2"></div>
+            <div class="floating-math-badge math-b1 font-stroked">1 + 1 = 2</div>
+            <div class="floating-math-badge math-b2 font-stroked">7 - 3 = 4</div>
+            <div class="floating-math-badge math-b3 font-stroked">5 + 4 = 9</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= SCREEN 2: SONG SELECT & LEADERBOARD (Picture 2 Style) ================= -->
+    <main id="screen-song-select" class="screen">
+      <div class="song-select-169-layout">
+        <!-- Left Showcase Stage: Selected Track Showcase & Mini Leaderboard -->
+        <section class="showcase-stage">
+          <!-- Album Cover & Meta -->
+          <div class="showcase-cover-card">
+            <div class="showcase-img-wrap">
+              <img id="showcase-cover-img" src="assets/covers/rick.svg" alt="Album Cover">
+              <div class="showcase-overlay-grade">S</div>
+            </div>
+
+            <div class="showcase-titles-wrap">
+              <h2 id="showcase-song-title" class="showcase-title font-stroked">Never Gonna Give You Up</h2>
+              <div id="showcase-artist" class="showcase-artist">Rick Astley</div>
+              <div id="showcase-mapper" class="showcase-mapper">Mapped by PWK Beats</div>
+            </div>
+          </div>
+
+          <!-- Difficulty Switcher Pill: < EASY > < MEDIUM > < HARD > -->
+          <div class="diff-switcher-row">
+            <button id="diff-prev-btn" class="diff-nav-arrow font-stroked">◀</button>
+            <div id="showcase-diff-pill" class="diff-select-pill pill-medium font-stroked">
+              <span id="showcase-diff-name">&lt; MEDIUM &gt;</span>
+            </div>
+            <button id="diff-next-btn" class="diff-nav-arrow font-stroked">▶</button>
+          </div>
+
+          <!-- Track Quick Stats Row -->
+          <div class="showcase-stats-row">
+            <span class="stat-badge"><span class="badge-icon">☁️</span> Ranked</span>
+            <span class="stat-badge"><span class="badge-icon">⭐</span> <span id="showcase-stars-val">3.20 stars</span></span>
+            <span class="stat-badge"><span class="badge-icon">🎵</span> <span id="showcase-notes-val">84 notes</span></span>
+            <span class="stat-badge"><span class="badge-icon">⏱️</span> <span id="showcase-duration-val">03:33</span></span>
+          </div>
+
+          <!-- Mini Leaderboard Card (Top 5) -->
+          <div class="showcase-leaderboard-box">
+            <div class="mini-lb-header">
+              <span class="mini-lb-title font-stroked">🏆 LEADERBOARD (TOP 5)</span>
+              <span class="mini-lb-sub">Global Ranked</span>
+            </div>
+            <div id="showcase-leaderboard-list" class="mini-lb-list">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- Big Action Buttons -->
+          <div class="showcase-actions-row">
+            <button id="btn-showcase-preview" class="btn btn-preview-action font-stroked">
+              👁️ Preview
+            </button>
+            <button id="btn-showcase-play" class="btn btn-play-action font-stroked">
+              ▶ PLAY
+            </button>
+          </div>
+        </section>
+
+        <!-- Right Side: Scrollable Song Cards Carousel (Picture 2 Style) -->
+        <section class="carousel-stage">
+          <div class="carousel-header">
+            <span class="carousel-header-title font-stroked">SONG SELECTION</span>
+            <span class="carousel-counter font-stroked">3 OFFICIAL TRACKS + CUSTOM</span>
+          </div>
+
+          <div id="song-carousel-list" class="song-carousel-container">
+            <!-- Dynamically rendered -->
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ================= SCREEN 3: MAP EDITOR (16:9 Full View) ================= -->
+    <main id="screen-editor" class="screen">
+      <div class="editor-header-bar">
+        <h2 class="font-stroked" style="color:#00E5FF; font-size:1.3rem;">🎵 MAP & CHART EDITOR (16:9)</h2>
+        <button id="btn-editor-back" class="btn btn-return font-stroked" style="padding:6px 16px;">
+          ◀ Return to Menu
+        </button>
+      </div>
+
+      <div class="editor-main-grid">
+        <!-- Editor Controls Column -->
+        <div class="editor-glass-card">
+          <div class="form-group">
+            <label>1. Audio MP3 File:</label>
+            <input type="file" id="editor-audio-file" accept="audio/mp3,audio/wav,audio/ogg" class="form-control">
+            <small id="editor-upload-status" class="editor-status-text">
+              No audio file selected (system will generate procedural rhythm beat if none provided).
+            </small>
+          </div>
+
+          <div class="grid-2col">
+            <div class="form-group">
+              <label>Song Title:</label>
+              <input type="text" id="editor-song-title" placeholder="e.g. Cyber Rush" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Artist / Creator:</label>
+              <input type="text" id="editor-song-artist" placeholder="e.g. SynthLord" class="form-control">
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <div class="form-group">
+              <label>BPM Tempo:</label>
+              <input type="number" id="editor-song-bpm" value="128" min="60" max="220" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Length (Seconds):</label>
+              <input type="number" id="editor-song-duration" value="60" min="10" max="300" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group highlight-box">
+            <div class="flex-between">
+              <span>Approach Rate (Seconds in advance):</span>
+              <span id="editor-approach-val" style="color:#00E5FF; font-weight:900;">2.0s</span>
+            </div>
+            <input type="range" id="editor-approach-time" min="1.0" max="4.0" step="0.1" value="2.0" class="slider-input">
+          </div>
+
+          <!-- Add Note Section -->
+          <div class="editor-add-note-box">
+            <h4 class="font-stroked" style="color:#00E5FF; margin-bottom:8px;">Add 1-Digit Calculation Note:</h4>
+            <div class="grid-4col">
+              <div>
+                <label>Time (s):</label>
+                <input type="number" id="editor-note-time" step="0.1" value="2.0" class="form-control">
+              </div>
+              <div>
+                <label>Lane:</label>
+                <select id="editor-note-lane" class="form-control" style="font-weight:700;">
+                  <option value="left">LEFT</option>
+                  <option value="center" selected>CENTER</option>
+                  <option value="right">RIGHT</option>
+                </select>
+              </div>
+              <div>
+                <label>Formula (0-9):</label>
+                <input type="text" id="editor-note-formula" value="2 + 3" class="form-control">
+              </div>
+              <div>
+                <button id="editor-btn-add-note" class="btn btn-song-select font-stroked" style="width:100%; padding:10px;">
+                  + Add Note
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audio Preview & Tap Actions -->
+          <div class="flex-gap-10" style="margin-top:12px;">
+            <button id="editor-btn-preview" class="btn btn-song-select font-stroked" style="flex:1;">
+              ▶ Play Audio Preview
+            </button>
+            <button id="editor-btn-tap-record" class="btn btn-edit font-stroked" style="flex:1;">
+              Tap to Beat (Record Beats)
+            </button>
+          </div>
+          <div style="text-align:center; margin-top:6px; font-weight:700; color:#94A3B8;">
+            Current Audio Playback: <span id="editor-preview-time" style="color:#00E5FF;">0.00s</span>
+          </div>
+        </div>
+
+        <!-- Editor Notes Table Column -->
+        <div class="editor-glass-card flex-col">
+          <div class="flex-between" style="margin-bottom:8px;">
+            <h3 class="font-stroked" style="color:#00E5FF; font-size:1.1rem;">CHART NOTES LIST</h3>
+            <span id="editor-notes-count" style="font-size:0.85rem; font-weight:700; color:#94A3B8;">Total Notes: 0</span>
+          </div>
+
+          <div class="notes-table-scroll">
+            <table class="notes-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Time</th>
+                  <th>Math Formula & Lane</th>
+                  <th style="text-align:right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="editor-notes-table-body">
+                <!-- Dynamically rendered -->
+              </tbody>
+            </table>
+          </div>
+
+          <button id="editor-btn-save" class="btn btn-edit font-stroked" style="margin-top:12px; width:100%; font-size:1.1rem;">
+            💾 Save Map to Library
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= SCREEN 4: GAMEPLAY SCREEN (Pure 16:9 Rhythm Highway) ================= -->
+    <main id="screen-gameplay" class="screen">
+      <div class="game-play-container">
+        <!-- HUD Header -->
+        <header class="game-hud">
+          <div class="hud-song-info">
+            <div id="hud-song-name" class="hud-song-title font-stroked">Song Title</div>
+            <div id="hud-song-author" class="hud-song-author">Artist Name</div>
+          </div>
+
+          <div class="hud-stats-group">
+            <div class="hud-stat-box">
+              <span class="hud-stat-label">ACCURACY</span>
+              <span id="hud-acc-val" class="hud-stat-val font-stroked" style="color:#00E5FF;">100.0%</span>
+            </div>
+            <div class="hud-stat-box">
+              <span class="hud-stat-label">COMBO</span>
+              <span id="hud-combo-val" class="hud-stat-val font-stroked" style="color:#FFB300;">0</span>
+            </div>
+            <div class="hud-stat-box">
+              <span class="hud-stat-label">SCORE</span>
+              <span id="hud-score-val" class="hud-stat-val font-stroked">0</span>
+            </div>
+            <button id="btn-game-quit" class="btn btn-exit font-stroked" style="padding:6px 14px; font-size:0.85rem;">
+              ✕ QUIT
+            </button>
+          </div>
+        </header>
+
+        <!-- Dynamic Groove / Fever Gauge -->
+        <div class="hud-groove-container">
+          <div id="hud-groove-fill" class="hud-groove-fill"></div>
+        </div>
+
+        <!-- Song Progress Bar -->
+        <div class="song-progress-container">
+          <div id="song-progress-bar" class="song-progress-bar"></div>
+        </div>
+
+        <!-- 3D Rhythm Highway Stage (Pure rhythm stage, full height) -->
+        <div class="rhythm-stage">
+          <div class="highway-wrapper">
+            <div id="highway-track" class="highway-track">
+              <!-- Lane Flash Beams (Left, Center, Right) -->
+              <div id="lane-beam-left" class="lane-beam lane-beam-left"></div>
+              <div id="lane-beam-center" class="lane-beam lane-beam-center"></div>
+              <div id="lane-beam-right" class="lane-beam lane-beam-right"></div>
+
+              <!-- 3-Lane Highway Dividers -->
+              <div class="lane-divider lane-divider-left"></div>
+              <div class="lane-divider lane-divider-right"></div>
+
+              <!-- Hit Line Target with 3 Lane Receptors -->
+              <div class="hit-zone-target" id="hit-zone-target">
+                <div class="lane-receptor" id="receptor-left">
+                  <span class="receptor-label font-stroked">LEFT</span>
+                </div>
+                <div class="lane-receptor" id="receptor-center">
+                  <span class="receptor-label font-stroked">CENTER</span>
+                </div>
+                <div class="lane-receptor" id="receptor-right">
+                  <span class="receptor-label font-stroked">RIGHT</span>
+                </div>
+              </div>
+
+              <!-- Dynamic Hit FX Layer (bursts, shockwaves, particles) -->
+              <div id="hit-fx-layer" class="hit-fx-layer"></div>
+            </div>
+          </div>
+
+          <!-- Highway Screen Vignette (Red on Miss, Cyan on Fever) -->
+          <div id="highway-flash-overlay" class="highway-flash-overlay"></div>
+
+          <!-- Judgement Text Popup Overlay -->
+          <div class="judgement-layer">
+            <div id="judgement-display" class="judgement-text font-stroked"></div>
+            <div id="combo-display" class="combo-text font-stroked"></div>
+          </div>
+
+          <!-- Combo Milestone Banner Overlay -->
+          <div id="combo-milestone-banner" class="combo-milestone-banner font-stroked"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= SCREEN 5: SCOREBOARD / RESULTS (16:9 Results) ================= -->
+    <main id="screen-result" class="screen">
+      <div class="result-container-169">
+        <div class="result-card-169">
+          <h2 class="result-title font-stroked">PERFORMANCE RESULTS</h2>
+          <div id="result-song-title" class="result-song-name">Song Name</div>
+          <div>
+            <span id="result-diff-badge" class="result-diff-tag diff-medium">MEDIUM</span>
+          </div>
+
+          <div>
+            <span id="result-rank-badge" class="result-rank-badge font-stroked rank-s">S</span>
+          </div>
+
+          <div id="result-score-val" class="result-score-big font-stroked">0</div>
+          <div id="result-max-combo" class="result-combo-sub">0 MAX COMBO</div>
+
+          <!-- Result Breakdown Table -->
+          <div class="result-stats-table">
+            <div class="result-stat-row res-perfect">
+              <span>PERFECT (Cyan)</span>
+              <span id="result-perfect-val">0</span>
+            </div>
+            <div class="result-stat-row res-great">
+              <span>GREAT (Green)</span>
+              <span id="result-great-val">0</span>
+            </div>
+            <div class="result-stat-row res-miss">
+              <span>MISS (Red)</span>
+              <span id="result-miss-val">0</span>
+            </div>
+            <div class="result-stat-row res-combined">
+              <span>TOTAL GOOD (PERFECT + GREAT)</span>
+              <span id="result-combined-val">0</span>
+            </div>
+          </div>
+
+          <div style="font-size:0.85rem; color:#00E5FF; font-weight:700; margin-top:8px;">
+            ✓ Score uploaded to Leaderboard successfully!
+          </div>
+
+          <div class="result-actions">
+            <button id="btn-result-replay" class="btn btn-replay font-stroked">
+              🔄 REPLAY
+            </button>
+            <button id="btn-result-return" class="btn btn-return font-stroked">
+              ☰ SONG SELECT
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= MODAL: SETTINGS (Glassmorphism Modal) ================= -->
+    <div id="modal-settings" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 class="font-stroked" style="color:#00E5FF;">⚙️ AUDIO & SETTINGS</h2>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-row">
+            <span>Music Volume (BGM):</span>
+            <span id="setting-bgm-val">80%</span>
+          </div>
+          <input type="range" id="setting-bgm-volume" min="0" max="100" value="80" class="slider-input">
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-label-row">
+            <span>UI & SFX Volume:</span>
+            <span id="setting-sfx-val">80%</span>
+          </div>
+          <input type="range" id="setting-sfx-volume" min="0" max="100" value="80" class="slider-input">
+        </div>
+
+        <div class="toggle-row">
+          <span style="font-weight:700; color:#E2E8F0;">Mute All Audio:</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="setting-mute-toggle">
+            <span class="slider-toggle"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: AUTH (Sign In / Register) ================= -->
+    <div id="modal-auth" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="form-tabs">
+            <button id="auth-tab-login" class="form-tab-btn active">Sign In</button>
+            <button id="auth-tab-register" class="form-tab-btn">Create Account</button>
+          </div>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+
+        <div id="auth-alert" class="auth-alert-msg">
+          Incorrect username or password.
+        </div>
+
+        <!-- Login Form -->
+        <form id="auth-form-login">
+          <div class="form-group">
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" class="form-control" required placeholder="Enter username">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" class="form-control" required placeholder="Enter password">
+          </div>
+          <button type="submit" class="btn btn-song-select font-stroked" style="width:100%; margin-top:10px;">
+            Sign In
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="auth-form-register" style="display:none;">
+          <div class="form-group">
+            <label for="reg-username">Username:</label>
+            <input type="text" id="reg-username" class="form-control" required placeholder="Choose a username">
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password:</label>
+            <input type="password" id="reg-password" class="form-control" required placeholder="Create a password">
+          </div>
+          <div class="form-group">
+            <label for="reg-confirm-password">Confirm Password:</label>
+            <input type="password" id="reg-confirm-password" class="form-control" required placeholder="Repeat password">
+          </div>
+          <button type="submit" class="btn btn-song-select font-stroked" style="width:100%; margin-top:10px;">
+            Create Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/math-generator.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/default-songs.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/rhythm-engine.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Interactive Starfield Canvas Script -->
+  <script>
+    (function initStarfield() {
+      const canvas = document.getElementById('starfield-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      const numStars = 140;
+
+      function resize() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+        createStars();
+      }
+
+      function createStars() {
+        stars = [];
+        for (let i = 0; i < numStars; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 0.5,
+            alpha: Math.random() * 0.8 + 0.2,
+            speed: Math.random() * 0.02 + 0.005,
+            phase: Math.random() * Math.PI * 2
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const time = Date.now() * 0.001;
+
+        stars.forEach(s => {
+          const a = s.alpha + Math.sin(time * 2 + s.phase) * 0.25;
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.1, Math.min(1, a))})`;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      draw();
+    })();
+  </script>
+</body>
+</html>

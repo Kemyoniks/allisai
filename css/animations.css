@@ -1,0 +1,377 @@
+/* ==========================================================================
+   Math Rhythm Game - Ultra Arcade FX & High-Impact Gameplay Animations
+   MAX-JUICE: Lens flares, particle fireworks, score popups, energy waves
+   ========================================================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Judgement Text Pop */
+@keyframes popupJudgement {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.4) rotate(-3deg);
+    filter: brightness(3.0) drop-shadow(0 0 30px #00E5FF);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.4) rotate(2deg);
+    filter: brightness(2.0) drop-shadow(0 0 25px currentColor);
+  }
+  40% {
+    transform: translateY(-4px) scale(1.05) rotate(0deg);
+    filter: brightness(1.3);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.75);
+    filter: blur(4px);
+  }
+}
+
+.anim-popup {
+  animation: popupJudgement 0.44s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Combo Count Visceral Punch Bounce (Left & Right Alternating) */
+@keyframes comboBouncePunchLeft {
+  0% {
+    transform: scale(0.8) translateY(6px) rotate(0deg);
+    filter: brightness(2.8);
+  }
+  30% {
+    transform: scale(1.68) translateY(-16px) rotate(-5deg);
+    filter: brightness(2.2) drop-shadow(0 0 25px currentColor);
+  }
+  60% {
+    transform: scale(0.92) translateY(3px) rotate(1.5deg);
+    filter: brightness(1.4);
+  }
+  100% {
+    transform: scale(1.0) translateY(0) rotate(0deg);
+    filter: brightness(1.0);
+  }
+}
+
+@keyframes comboBouncePunchRight {
+  0% {
+    transform: scale(0.8) translateY(6px) rotate(0deg);
+    filter: brightness(2.8);
+  }
+  30% {
+    transform: scale(1.68) translateY(-16px) rotate(5deg);
+    filter: brightness(2.2) drop-shadow(0 0 25px currentColor);
+  }
+  60% {
+    transform: scale(0.92) translateY(3px) rotate(-1.5deg);
+    filter: brightness(1.4);
+  }
+  100% {
+    transform: scale(1.0) translateY(0) rotate(0deg);
+    filter: brightness(1.0);
+  }
+}
+
+.anim-combo-punch-left {
+  animation: comboBouncePunchLeft 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.anim-combo-punch-right {
+  animation: comboBouncePunchRight 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Combo Ghost Echo Ripple (Afterimage expands and dissolves) */
+@keyframes comboGhostEchoAnim {
+  0% {
+    transform: translate(-50%, -50%) scale(1.0);
+    opacity: 0.95;
+    filter: brightness(3.0) blur(0px);
+  }
+  100% {
+    transform: translate(-50%, -90%) scale(2.4);
+    opacity: 0;
+    filter: brightness(1.8) blur(6px);
+  }
+}
+
+.anim-combo-ghost {
+  animation: comboGhostEchoAnim 0.3s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+
+/* HUD Combo Number Pop */
+@keyframes hudComboPulseAnim {
+  0% { transform: scale(1.0); filter: brightness(1); }
+  35% { transform: scale(1.65) translateY(-3px); filter: brightness(2.5); }
+  70% { transform: scale(0.92); }
+  100% { transform: scale(1.0) translateY(0); filter: brightness(1); }
+}
+
+.anim-hud-combo {
+  animation: hudComboPulseAnim 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Highway Camera Micro-Kick (Beat Thump on Hit) */
+@keyframes highwayKick {
+  0%   { transform: rotateX(22deg) translateY(0); filter: brightness(1.3); }
+  30%  { transform: rotateX(22deg) translateY(4px) scale(1.012); filter: brightness(1.15); }
+  100% { transform: rotateX(22deg) translateY(0) scale(1); filter: brightness(1); }
+}
+
+.highway-kick {
+  animation: highwayKick 0.16s ease-out;
+}
+
+/* Highway Miss Screen Shake */
+@keyframes highwayMissShake {
+  0%, 100% { transform: rotateX(22deg) translateX(0); }
+  20%      { transform: rotateX(22deg) translateX(-10px) translateY(3px); }
+  40%      { transform: rotateX(22deg) translateX(10px) translateY(-2px); }
+  60%      { transform: rotateX(22deg) translateX(-6px); }
+  80%      { transform: rotateX(22deg) translateX(4px); }
+}
+
+.highway-miss-shake {
+  animation: highwayMissShake 0.28s ease-out;
+}
+
+/* Lane Flash Beam (Blazing laser pillar shoots upwards on hit) */
+@keyframes laneBeamRise {
+  0% {
+    opacity: 1;
+    transform: scaleY(1);
+    filter: brightness(3.5);
+  }
+  30% {
+    opacity: 0.9;
+    filter: brightness(2.2);
+  }
+  70% {
+    opacity: 0.5;
+    filter: brightness(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(0.4);
+    filter: brightness(1);
+  }
+}
+
+.anim-lane-beam {
+  animation: laneBeamRise 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Lens Flare Starburst Core */
+@keyframes lensFlareAnim {
+  0% {
+    transform: translate(-50%, -50%) scale(0.1) rotate(0deg);
+    opacity: 1;
+    filter: brightness(3.5);
+  }
+  35% {
+    transform: translate(-50%, -50%) scale(1.5) rotate(45deg);
+    opacity: 0.95;
+    filter: brightness(2.5);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2) rotate(90deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+.anim-lens-flare {
+  animation: lensFlareAnim 0.28s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+/* Primary Shockwave Expanding Ring */
+@keyframes shockwaveExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0.15);
+    opacity: 1;
+    border-width: 8px;
+  }
+  40% {
+    opacity: 0.95;
+    border-width: 5px;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.8);
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+.anim-shockwave {
+  animation: shockwaveExpand 0.34s cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
+}
+
+/* Secondary Outer Distortion Shockwave */
+@keyframes shockwaveSecondaryExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0.8;
+    border-width: 4px;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3.8);
+    opacity: 0;
+    border-width: 0.5px;
+  }
+}
+
+.anim-shockwave-secondary {
+  animation: shockwaveSecondaryExpand 0.42s cubic-bezier(0.05, 0.7, 0.2, 1) forwards;
+}
+
+/* Floating Arcade Score Text Popup (+1000 / +650) */
+@keyframes scorePopupFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, calc(-50% - 25px)) scale(1.35);
+  }
+  50% {
+    transform: translate(-50%, calc(-50% - 45px)) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 75px)) scale(0.9);
+  }
+}
+
+.anim-score-popup {
+  animation: scorePopupFloat 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Formula Pop & Ascend (When note is solved) */
+@keyframes formulaPopAscend {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    filter: brightness(3.0) drop-shadow(0 0 20px #FFFFFF);
+  }
+  40% {
+    transform: translate(-50%, -90%) scale(1.4);
+    opacity: 0.95;
+    filter: brightness(2.0) drop-shadow(0 0 15px #00E5FF);
+  }
+  100% {
+    transform: translate(-50%, -160%) scale(1.1);
+    opacity: 0;
+    filter: brightness(1) blur(3px);
+  }
+}
+
+.anim-formula-pop {
+  animation: formulaPopAscend 0.35s ease-out forwards;
+}
+
+/* Formula Miss Shatter (When note is missed or wrong answer) */
+@keyframes formulaMissShatter {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(-50%, -40%) scale(1.3) rotate(-12deg);
+    filter: brightness(2.5) drop-shadow(0 0 16px #FF1744);
+  }
+  100% {
+    transform: translate(-50%, 50%) scale(0.5) rotate(25deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+.anim-formula-miss {
+  animation: formulaMissShatter 0.32s ease-in forwards;
+}
+
+/* Target Receptor Key Flash */
+@keyframes receptorFlash {
+  0% {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 45px 18px rgba(0, 229, 255, 1);
+    transform: scale(1.2);
+  }
+  100% {
+    background: rgba(21, 216, 179, 0.15);
+    box-shadow: 0 0 10px rgba(21, 216, 179, 0.3);
+    transform: scale(1);
+  }
+}
+
+.anim-receptor-flash {
+  animation: receptorFlash 0.18s ease-out forwards;
+}
+
+/* Combo Milestone Banner (e.g. 10 COMBO! 50 COMBO!) */
+@keyframes milestoneBannerAnim {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3) rotate(-6deg);
+    filter: brightness(3.0);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.35) rotate(3deg);
+    filter: brightness(2.0);
+  }
+  35% {
+    transform: translate(-50%, -50%) scale(1.0) rotate(0deg);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -75%) scale(0.8);
+    filter: blur(4px);
+  }
+}
+
+.anim-milestone-banner {
+  animation: milestoneBannerAnim 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Highway Energy Grid Wave (Floor Pulse) */
+@keyframes floorEnergyWave {
+  0% {
+    opacity: 0.9;
+    transform: scaleX(0.4) translateY(0);
+    filter: brightness(2.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1.8) translateY(-140px);
+    filter: brightness(1);
+  }
+}
+
+.anim-floor-energy {
+  animation: floorEnergyWave 0.35s ease-out forwards;
+}
+
+/* Screen Red Vignette on Miss */
+@keyframes missVignette {
+  0% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.anim-miss-vignette {
+  animation: missVignette 0.3s ease-out forwards;
+}

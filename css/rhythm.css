@@ -1,0 +1,669 @@
+/* ==========================================================================
+   Math Rhythm Game - Rhythm Highway, Notes, 3-Lanes, and Judgements
+   16:9 Viewport Optimized with MAX-JUICE Ultra Arcade FX
+   ========================================================================== */
+
+/* Game Screen Layout */
+.game-play-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gameplay Header / HUD */
+.game-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 18px;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(14px);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  margin-bottom: 6px;
+  z-index: 5;
+}
+
+.hud-song-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-song-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.hud-song-author {
+  font-size: 0.8rem;
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.hud-stats-group {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+
+.hud-stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hud-stat-label {
+  font-size: 0.68rem;
+  color: #64748B;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.hud-stat-val {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  transition: transform 0.1s ease-out;
+}
+
+/* Accuracy & Groove / Fever Bar in HUD */
+.hud-groove-container {
+  width: 100%;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  position: relative;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hud-groove-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #15D8B3, #00E5FF, #2979FF, #FF4081);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 1);
+  transition: width 0.15s ease-out;
+}
+
+/* Progress bar */
+.song-progress-container {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.song-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #15D8B3, #2196F3);
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.8);
+  transition: width 0.1s linear;
+}
+
+/* Rhythm Stage & Highway */
+.rhythm-stage {
+  flex: 1;
+  position: relative;
+  background: radial-gradient(ellipse at bottom, rgba(13, 71, 161, 0.35) 0%, rgba(3, 7, 18, 0.92) 100%);
+  border: 1px solid rgba(33, 150, 243, 0.4);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95);
+}
+
+/* 3D Perspective Highway */
+.highway-wrapper {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  perspective: 550px;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.highway-track {
+  position: absolute;
+  width: 90%;
+  max-width: 600px;
+  height: 100%;
+  transform-origin: top center;
+  transform: rotateX(22deg);
+  background: linear-gradient(180deg, rgba(33, 150, 243, 0.05) 0%, rgba(13, 71, 161, 0.35) 100%);
+  border-left: 3px solid #2196F3;
+  border-right: 3px solid #2196F3;
+  box-shadow: 0 0 40px rgba(33, 150, 243, 0.4), inset 0 0 30px rgba(33, 150, 243, 0.2);
+  overflow: hidden;
+}
+
+/* 3 Lane Dividing Lines (Left, Center, Right) */
+.lane-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(33, 150, 243, 0.3);
+  border-left: 2px dashed rgba(33, 150, 243, 0.55);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.lane-divider-left {
+  left: 33.33%;
+}
+
+.lane-divider-right {
+  left: 66.66%;
+}
+
+/* Floor Energy Wave (Pulsing across highway floor on hit) */
+.highway-energy-wave {
+  position: absolute;
+  bottom: 18%;
+  left: 5%;
+  right: 5%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.9), transparent);
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.9), 0 0 45px #00E5FF;
+  pointer-events: none;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+/* Vertical Lane Flash Laser Pillars (Full-highway beaming flare) */
+.lane-beam {
+  position: absolute;
+  top: 0;
+  bottom: 18%; /* From top down to 82% hit line */
+  width: 33.33%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  transform-origin: bottom center;
+  filter: drop-shadow(0 0 25px rgba(0, 229, 255, 0.9));
+}
+
+.lane-beam-left {
+  left: 0;
+  background: linear-gradient(0deg, rgba(0, 229, 255, 0.95) 0%, rgba(0, 229, 255, 0.4) 40%, rgba(0, 229, 255, 0.1) 80%, transparent 100%);
+  box-shadow: inset 0 0 35px rgba(0, 229, 255, 0.9), 0 0 40px rgba(0, 229, 255, 0.7);
+}
+
+.lane-beam-center {
+  left: 33.33%;
+  background: linear-gradient(0deg, rgba(21, 216, 179, 0.95) 0%, rgba(21, 216, 179, 0.4) 40%, rgba(21, 216, 179, 0.1) 80%, transparent 100%);
+  box-shadow: inset 0 0 35px rgba(21, 216, 179, 0.9), 0 0 40px rgba(21, 216, 179, 0.7);
+}
+
+.lane-beam-right {
+  left: 66.66%;
+  background: linear-gradient(0deg, rgba(41, 121, 255, 0.95) 0%, rgba(41, 121, 255, 0.4) 40%, rgba(41, 121, 255, 0.1) 80%, transparent 100%);
+  box-shadow: inset 0 0 35px rgba(41, 121, 255, 0.9), 0 0 40px rgba(41, 121, 255, 0.7);
+}
+
+/* Beam color variants for Great & Miss */
+.lane-beam.beam-great {
+  background: linear-gradient(0deg, rgba(0, 230, 118, 0.95) 0%, rgba(0, 230, 118, 0.4) 40%, rgba(0, 230, 118, 0.1) 80%, transparent 100%) !important;
+  box-shadow: inset 0 0 35px rgba(0, 230, 118, 0.9), 0 0 40px rgba(0, 230, 118, 0.7) !important;
+}
+
+.lane-beam.beam-miss {
+  background: linear-gradient(0deg, rgba(255, 23, 68, 0.95) 0%, rgba(255, 23, 68, 0.35) 40%, rgba(255, 23, 68, 0.1) 80%, transparent 100%) !important;
+  box-shadow: inset 0 0 35px rgba(255, 23, 68, 0.9), 0 0 40px rgba(255, 23, 68, 0.7) !important;
+}
+
+/* Hit Target Line (Aligned precisely at 82% with note centers) */
+.hit-zone-target {
+  position: absolute;
+  top: 82%;
+  left: 0;
+  right: 0;
+  height: 66px;
+  transform: translateY(-50%);
+  border-top: 3px solid var(--btn-num); /* #15D8B3 */
+  border-bottom: 3px solid var(--btn-num); /* #15D8B3 */
+  background: rgba(21, 216, 179, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 3;
+  box-shadow: 0 0 25px rgba(21, 216, 179, 0.5), inset 0 0 15px rgba(21, 216, 179, 0.3);
+}
+
+/* 3 Lane Receptor Targets on the Hit Line */
+.lane-receptor {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.08s ease-out;
+  border-right: 1px dashed rgba(21, 216, 179, 0.35);
+}
+
+.lane-receptor:last-child {
+  border-right: none;
+}
+
+.receptor-label {
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #15D8B3;
+  opacity: 0.9;
+  text-shadow: 0 0 10px rgba(21, 216, 179, 0.9);
+}
+
+.lane-receptor.receptor-active {
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 30px rgba(0, 229, 255, 1), 0 0 25px rgba(0, 229, 255, 0.9);
+  transform: scale(1.05);
+}
+
+/* Hit feedback ripple on bar */
+.hit-zone-target.pulse-hit {
+  background: rgba(21, 216, 179, 0.45);
+  box-shadow: 0 0 45px rgba(21, 216, 179, 1), inset 0 0 25px #FFFFFF;
+}
+
+/* Dynamic Hit FX Layer (Shockwaves, Sparks, Formula Popping) */
+.hit-fx-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 6;
+  overflow: visible;
+}
+
+/* Lens Flare Starburst Core */
+.hit-lens-flare {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, #FFFFFF 18%, rgba(0, 229, 255, 0.9) 45%, rgba(0, 229, 255, 0.2) 70%, transparent 85%);
+  box-shadow: 0 0 50px #00E5FF, 0 0 90px #FFFFFF;
+  z-index: 8;
+}
+
+.hit-lens-flare::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -40%;
+  right: -40%;
+  height: 5px;
+  background: linear-gradient(90deg, transparent, #FFFFFF, transparent);
+  transform: translateY(-50%);
+  box-shadow: 0 0 20px #00E5FF;
+}
+
+.hit-lens-flare::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -40%;
+  bottom: -40%;
+  width: 5px;
+  background: linear-gradient(180deg, transparent, #FFFFFF, transparent);
+  transform: translateX(-50%);
+  box-shadow: 0 0 20px #00E5FF;
+}
+
+.hit-lens-flare.flare-great {
+  background: radial-gradient(circle, #FFFFFF 18%, rgba(0, 230, 118, 0.9) 45%, rgba(0, 230, 118, 0.2) 70%, transparent 85%);
+  box-shadow: 0 0 50px #00E676, 0 0 80px #FFFFFF;
+}
+
+.hit-lens-flare.flare-great::before,
+.hit-lens-flare.flare-great::after {
+  box-shadow: 0 0 20px #00E676;
+}
+
+/* Primary Hit Burst Shockwave Ring */
+.hit-shockwave {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border-style: solid;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.shockwave-perfect {
+  border-color: #00E5FF;
+  box-shadow: 0 0 35px #00E5FF, inset 0 0 25px #00E5FF;
+}
+
+.shockwave-great {
+  border-color: #00E676;
+  box-shadow: 0 0 35px #00E676, inset 0 0 25px #00E676;
+}
+
+.shockwave-miss {
+  border-color: #FF1744;
+  box-shadow: 0 0 35px #FF1744, inset 0 0 25px #FF1744;
+}
+
+/* Secondary Outer Distortion Shockwave */
+.hit-shockwave-secondary {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.8);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* Floating Arcade Score Text Popup (+1000 / +650) */
+.hit-score-popup {
+  position: absolute;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  pointer-events: none;
+  z-index: 9;
+  white-space: nowrap;
+}
+
+.score-popup-perfect {
+  color: #FFD54F;
+  text-shadow: 0 0 20px rgba(255, 213, 79, 1), 0 0 35px #FF8F00, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.score-popup-great {
+  color: #00E676;
+  text-shadow: 0 0 20px rgba(0, 230, 118, 1), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+/* Multi-Style Hit Sparks / Particles */
+.hit-particle {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.hit-particle.spark-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.hit-particle.spark-star {
+  font-size: 1.2rem;
+  font-weight: 900;
+  filter: drop-shadow(0 0 10px currentColor);
+  line-height: 1;
+}
+
+.hit-particle.spark-diamond {
+  font-size: 1.1rem;
+  font-weight: 900;
+  filter: drop-shadow(0 0 10px currentColor);
+  line-height: 1;
+}
+
+.hit-particle.spark-streak {
+  width: 16px;
+  height: 4px;
+  border-radius: 4px;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+/* Floating Ghost Math Formula upon Solving */
+.hit-ghost-formula {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 0 35px rgba(255, 255, 255, 1), 0 0 60px #00E5FF;
+  pointer-events: none;
+  z-index: 7;
+}
+
+/* Timing Offset Badge (e.g. +14ms, EARLY, LATE) */
+.hit-offset-badge {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  pointer-events: none;
+  animation: fadeIn 0.1s ease-out, popupJudgement 0.4s ease-out forwards;
+}
+
+.offset-perfect {
+  color: #00E5FF;
+  background: rgba(0, 229, 255, 0.2);
+  border: 1px solid rgba(0, 229, 255, 0.7);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+}
+
+.offset-great {
+  color: #00E676;
+  background: rgba(0, 230, 118, 0.2);
+  border: 1px solid rgba(0, 230, 118, 0.7);
+  box-shadow: 0 0 15px rgba(0, 230, 118, 0.6);
+}
+
+/* Math Note Object (Center-anchored for pixel-perfect timing alignment) */
+.note-item {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.95);
+  padding: 6px 18px;
+  border-radius: 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.35);
+  border: 2px solid #FFFFFF;
+  z-index: 4;
+  pointer-events: none;
+  transition: transform 0.04s linear;
+}
+
+/* 3-Lane Note Positions: Left, Center, Right */
+.note-item.lane-left {
+  left: 17% !important;
+  border-color: #80DEEA;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 229, 255, 0.45);
+}
+
+.note-item.lane-center {
+  left: 50% !important;
+  border-color: #FFFFFF;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.45);
+}
+
+.note-item.lane-right {
+  left: 83% !important;
+  border-color: #90CAF9;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(41, 121, 255, 0.45);
+}
+
+/* Note Characters and Operations */
+.note-char {
+  font-size: 1.85rem;
+  font-weight: 900;
+  margin: 0 3px;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Precise Digit Color Classes */
+.char-d1 { color: var(--digit-1) !important; }  /* 1: Light Green */
+.char-d2 { color: var(--digit-2) !important; }  /* 2: Green */
+.char-d3 { color: var(--digit-3) !important; }  /* 3: Dark Green */
+.char-d4 { color: var(--digit-4) !important; }  /* 4: Light Pink */
+.char-d5 { color: var(--digit-5) !important; }  /* 5: Pink */
+.char-d6 { color: var(--digit-6) !important; }  /* 6: Dark Pink */
+.char-d7 { color: var(--digit-7) !important; }  /* 7: Light Purple */
+.char-d8 { color: var(--digit-8) !important; }  /* 8: Purple */
+.char-d9 { color: var(--digit-9) !important; }  /* 9: Dark Purple */
+.char-d0 { color: var(--digit-0) !important; }  /* 0: Cyan */
+
+/* Operators Colors */
+.char-op-minus { color: var(--op-minus) !important; } /* Blood Maroon */
+.char-op-plus  { color: var(--op-plus) !important; }  /* Yellow-green */
+
+/* Judgement Popup Overlay */
+.judgement-layer {
+  position: absolute;
+  top: 35%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.judgement-text {
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0;
+}
+
+.judge-perfect {
+  color: var(--judge-perfect) !important;
+  text-shadow: 0 0 30px rgba(0, 229, 255, 1), 0 0 60px #00E5FF, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.judge-great {
+  color: var(--judge-great) !important;
+  text-shadow: 0 0 30px rgba(0, 230, 118, 1), 0 0 60px #00E676, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.judge-miss {
+  color: var(--judge-miss) !important;
+  text-shadow: 0 0 30px rgba(255, 23, 68, 1), 0 0 60px #FF1744, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.combo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: 2px;
+  opacity: 0;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.combo-big-num {
+  font-size: 3.6rem;
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: 2px;
+  display: inline-block;
+  color: #FFEB3B;
+  text-shadow: 0 0 25px rgba(255, 235, 59, 1), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  will-change: transform, filter;
+}
+
+.combo-sub-label {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #FFFFFF;
+  opacity: 0.95;
+  margin-top: 3px;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.9), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.combo-ghost-echo {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  font-size: 3.6rem;
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: 2px;
+  pointer-events: none;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+/* Combo Fire Levels */
+.combo-fire-1 {
+  color: #00E5FF !important;
+  text-shadow: 0 0 35px rgba(0, 229, 255, 1), 0 0 60px #00E5FF, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
+}
+
+.combo-fire-2 {
+  color: #FFD54F !important;
+  text-shadow: 0 0 40px rgba(255, 213, 79, 1), 0 0 70px #FF6D00, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
+}
+
+.combo-fire-3 {
+  color: #FF4081 !important;
+  text-shadow: 0 0 45px rgba(255, 64, 129, 1), 0 0 80px #7C4DFF, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
+}
+
+/* Combo Milestone Banner (e.g. 25 COMBO! FEVER!) */
+.combo-milestone-banner {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #FFFFFF;
+  background: linear-gradient(90deg, transparent, rgba(13, 71, 161, 0.9), rgba(0, 229, 255, 0.95), rgba(13, 71, 161, 0.9), transparent);
+  padding: 12px 48px;
+  border-radius: 40px;
+  box-shadow: 0 0 45px rgba(0, 229, 255, 0.9);
+  text-shadow: 0 0 30px #00E5FF, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 12;
+}
+
+/* Screen Miss Vignette */
+.highway-flash-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 8;
+  opacity: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(255, 23, 68, 0.6) 100%);
+}

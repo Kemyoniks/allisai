@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A237E"/>
+      <stop offset="50%" stop-color="#0D47A1"/>
+      <stop offset="100%" stop-color="#00E5FF"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFEB3B"/>
+      <stop offset="100%" stop-color="#E91E63"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <circle cx="200" cy="180" r="90" fill="url(#sun) opacity='0.85'"/>
+  <path d="M50 300 L350 300 M70 330 L330 330 M90 360 L310 360" stroke="#00E5FF" stroke-width="3" opacity="0.6"/>
+  <text x="200" y="270" text-anchor="middle" fill="#FFFFFF" font-family="Segoe UI, sans-serif" font-weight="900" font-size="28" letter-spacing="2">RICK ASTLEY</text>
+  <text x="200" y="305" text-anchor="middle" fill="#00E5FF" font-family="Segoe UI, sans-serif" font-weight="800" font-size="16" letter-spacing="3">NEVER GONNA GIVE YOU UP</text>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#006064"/>
+      <stop offset="50%" stop-color="#00838F"/>
+      <stop offset="100%" stop-color="#001015"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg3)"/>
+  <!-- Water ripples -->
+  <ellipse cx="200" cy="190" rx="140" ry="60" fill="none" stroke="#80DEEA" stroke-width="3" opacity="0.6"/>
+  <ellipse cx="200" cy="190" rx="100" ry="40" fill="none" stroke="#E0F7FA" stroke-width="2" opacity="0.8"/>
+  <ellipse cx="200" cy="190" rx="60" ry="20" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.9"/>
+  <!-- Grunge smiley -->
+  <text x="200" y="165" text-anchor="middle" fill="#FFEB3B" font-family="Segoe UI, sans-serif" font-weight="900" font-size="70" opacity="0.9">✕ ✕</text>
+  <path d="M160 210 Q200 240 240 210" stroke="#FFEB3B" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <text x="200" y="320" text-anchor="middle" fill="#FFFFFF" font-family="Segoe UI, sans-serif" font-weight="900" font-size="34" letter-spacing="4">NIRVANA</text>
+  <text x="200" y="355" text-anchor="middle" fill="#80DEEA" font-family="Segoe UI, sans-serif" font-weight="700" font-size="14" letter-spacing="2">SMELLS LIKE TEEN SPIRIT</text>
+</svg>
